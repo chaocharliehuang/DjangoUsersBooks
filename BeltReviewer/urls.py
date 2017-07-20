@@ -18,7 +18,7 @@ from django.conf.urls import url, include
 from apps.users import views as users_views
 
 urlpatterns = [
-    url(r'^', users_views.index),
+    url(r'^$', users_views.index),
     url(r'^users/', include('apps.users.urls', namespace='users')),
-    # url(r'^books/', include('apps.books.urls', namespace='books'))
+    url(r'^books/', include('apps.books.urls', namespace='books'))
 ]
