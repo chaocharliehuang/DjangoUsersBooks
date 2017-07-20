@@ -6,6 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
-        <h1>Welcome</h1>
+        <h1>Welcome, {{request.session.first_name}}!</h1>
+        <p><a href={% url 'books:add' %}>Add Book and Review</a> | 
+            <a href={% url 'users:logout' %}>Logout</a></p>
     </body>
 </html>

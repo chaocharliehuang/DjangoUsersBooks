@@ -34,7 +34,6 @@ def register(request):
         pw_hashed = bcrypt.hashpw(request.POST['pw'].encode(), bcrypt.gensalt())
         new_user_id = User.objects.create(first_name=request.POST['first_name'], last_name=request.POST['last_name'], email=request.POST['email'], pw=pw_hashed).id
 
-        request.session['first_name'] = ''
         request.session['last_name'] = ''
         request.session['email'] = ''
         request.session['id'] = new_user_id
@@ -52,7 +51,7 @@ def login(request):
         # FORM VALIDATION
         if len(email) < 1 or len(pw) < 1:
             messages.error(request, 'Email and/or password fields cannot be blank!')
-            return redirect(reverse('users:index'))
+            return redirect('/')
         
         # USER LOGIN
         users = User.objects.filter(email=email)
@@ -63,8 +62,13 @@ def login(request):
             if bcrypt.checkpw(pw.encode(), user.pw.encode()):
                 request.session['login_email'] = ''
                 request.session['id'] = user.id
+                request.session['first_name'] = user.first_name
                 return redirect(reverse('books:index'))
         messages.error(request, 'Wrong email/password combination!')
-        return redirect(reverse('users:index'))
+        return redirect('/')
     else:
-        return redirect(reverse('users:index'))
+        return redirect('/')
+
+def logout(request):
+    request.session.flush()
+    return redirect('/')
