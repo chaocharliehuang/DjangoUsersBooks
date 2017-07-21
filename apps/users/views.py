@@ -7,6 +7,8 @@ import bcrypt
 from .models import User
 
 def index(request):
+    if 'id' in request.session:
+        return redirect(reverse('books:index'))
     if 'first_name' not in request.session:
         request.session['first_name'] = ''
     if 'last_name' not in request.session:
