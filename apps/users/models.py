@@ -38,16 +38,18 @@ class UserManager(models.Manager):
 class BookManager(models.Manager):
     def book_validator(self, request):
         book_title = request.POST['book_title']
-        author_name = request.POST['author_name']
-
         request.session['book_title'] = book_title
-        request.session['author_name'] = author_name
 
         errors = {}
         if len(book_title) < 1:
             errors['book_title'] = 'Book title cannot be blank!'
-        if len(author_name) < 2 or not author_name.isalpha():
-            errors['author_name'] = 'Author name must be at least 2 characters and only contain letters!'
+
+        if request.POST['author_name_list'] == 'custom':
+            author_name = request.POST['author_name']
+            request.session['author_name'] = author_name
+            if len(author_name) < 2:
+                errors['author_name'] = 'Author name must be at least 2 characters!'
+
         return errors
 
 class ReviewManager(models.Manager):
