@@ -25,7 +25,7 @@
         <form action={% url 'books:process_book' %} method="POST">
             {% csrf_token %}
             <label for="book_title">Book Title: </label>
-            <input type="text" name="book_title" id="book_title" value={{request.session.book_title}}>
+            <input type="text" name="book_title" id="book_title" value="{{request.session.book_title}}">
             <br><br>
             Author: <br>
             Choose from the list: 

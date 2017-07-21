@@ -6,11 +6,36 @@ from ..users.models import *
 
 def index(request):
     if 'id' not in request.session:
+        messages.error(request, 'Must be logged in to view')
         return redirect('/')
-    return render(request, 'books/index.html')
+    context = {'reviews': [], 'books': []}
+    books_recent = Book.objects.all().order_by('-updated_at')[:3]
+    books3 = []
+    for book in books_recent:
+        latest_review = book.reviews.first()
+        books3.append(book.id)
+        context['reviews'].append({
+            'book_id': book.id,
+            'book_title': book.title,
+            'rating': latest_review.rating * '*',
+            'user': latest_review.user.first_name,
+            'user_id': latest_review.user.id,
+            'review': latest_review.review,
+            'posted': latest_review.created_at.strftime('%B %d, %Y')
+        })
+    books = Book.objects.all()
+    if len(books) > 3:
+        books = Book.objects.all().exclude(id=books3[0]).exclude(id=books3[1]).exclude(id=books3[2]).order_by('title')
+        for book in books:
+            context['books'].append({
+                'book_id': book.id,
+                'book_title': book.title
+            })
+    return render(request, 'books/index.html', context)
 
 def add(request):
     if 'id' not in request.session:
+        messages.error(request, 'Must be logged in to view')
         return redirect('/')
     if 'book_title' not in request.session:
         request.session['book_title'] = ''
@@ -93,6 +118,9 @@ def display_book(request, id):
     return render(request, 'books/book.html', context)
 
 def delete_review(request, id):
+    if 'id' not in request.session:
+        messages.error(request, 'Must be logged in to view')
+        return redirect('/')
     review = Review.objects.get(id=id)
     book_id = review.book.id
     review.delete()

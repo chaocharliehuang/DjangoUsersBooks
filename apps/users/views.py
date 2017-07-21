@@ -72,3 +72,23 @@ def login(request):
 def logout(request):
     request.session.flush()
     return redirect('/')
+
+def user(request, id):
+    if 'id' not in request.session:
+        messages.error(request, 'Must be logged in to view')
+        return redirect('/')
+    user = User.objects.get(id=id)
+    context = {
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'email': user.email,
+        'total_reviews': user.reviews.count(),
+        'reviews': []
+    }
+    reviews = user.reviews.all()
+    for review in reviews:
+        context['reviews'].append({
+            'book_id': review.book.id,
+            'book_title': review.book.title
+        })
+    return render(request, 'users/user.html', context)

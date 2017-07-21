@@ -75,6 +75,8 @@ class Book(models.Model):
     title = models.CharField(max_length=255)
     author_name = models.CharField(max_length=255)
     users = models.ManyToManyField(User, related_name="books")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     objects = BookManager()
     def __repr__(self):
         return "<Book object: {}>".format(self.title)

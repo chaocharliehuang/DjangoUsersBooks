@@ -16,9 +16,9 @@
         <h3>Add a Review:</h3>
         <form action={% url 'books:process_book' %} method="POST">
             {% csrf_token %}
-            <input type="hidden" name="book_title" value={{book_title}}>
+            <input type="hidden" name="book_title" value="{{book_title}}">
             <input type="hidden" name="author_name_list" value="custom">
-            <input type="hidden" name="author_name" value={{author_name}}>
+            <input type="hidden" name="author_name" value="{{author_name}}">
             <textarea name="review" rows="5" cols="50"></textarea>
             <br>
             Rating: 
@@ -38,7 +38,7 @@
         <hr>
         {% for review in reviews %}
         <p>Rating: {{review.rating}}</p>
-        <p><a href="">{{review.user}}</a> says: {{review.review}}</p>
+        <p><a href={% url 'users:user' id=review.user_id %}>{{review.user}}</a> says: {{review.review}}</p>
         <p>Posted on {{review.posted}}</p>
         {% if review.user_id == request.session.id %}
         <p><a href={% url 'books:delete_review' id=review.review_id %}>Delete this Review</a></p>
